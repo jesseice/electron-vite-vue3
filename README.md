@@ -10,10 +10,6 @@ npm create electron-vite
 
 ![electron-vite-vue.gif](/electron-vite-vue.gif)
 
-## Debug
-
-![electron-vite-react-debug.gif](https://github.com/electron-vite/electron-vite-react/blob/main/electron-vite-react-debug.gif?raw=true)
-
 ## Directory
 
 ```diff
