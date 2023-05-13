@@ -9,5 +9,5 @@ const state = reactive({
 });
 ipcRenderer.send("main-process-message", "99999999");
 console.log("[ipcRenderer] ---> ", ipcRenderer);
-window.ipcRenderer = ipcRenderer;
+window["ipcRenderer"] = ipcRenderer;
 </script>

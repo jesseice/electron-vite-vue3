@@ -3,11 +3,12 @@
  */
 {
   "$schema": "https://raw.githubusercontent.com/electron-userland/electron-builder/master/packages/app-builder-lib/scheme.json",
-  "appId": "YourAppID",
+  "appId": "appId1",
   "asar": true,
   "directories": {
     "output": "release/${version}"
   },
+  "afterPack": "./build/afterPack.ts",
   "files": [
     "dist-electron",
     "dist"
@@ -19,6 +20,7 @@
     ]
   },
   "win": {
+    "icon": "./public/icon.ico",
     "target": [
       {
         "target": "nsis",
@@ -30,7 +32,10 @@
     "artifactName": "${productName}_${version}.${ext}"
   },
   "nsis": {
+    "shortcutName": "etApp",
     "oneClick": false,
+    "installerIcon": "./public/icon.ico",
+    "installerHeaderIcon": "./public/icon.ico",
     "perMachine": false,
     "allowToChangeInstallationDirectory": true,
     "deleteAppDataOnUninstall": false

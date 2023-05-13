@@ -1,7 +1,8 @@
-import { app, BrowserWindow, shell, ipcMain } from "electron";
+import { app, BrowserWindow, shell, Notification } from "electron";
 import { release } from "node:os";
 import { join } from "node:path";
 import "../ipcMain/index";
+import fullUpdate from "../utils/fullUpdate";
 // The built directory structure
 //
 // ├─┬ dist-electron
@@ -18,6 +19,15 @@ process.env.PUBLIC = process.env.VITE_DEV_SERVER_URL
   ? join(process.env.DIST_ELECTRON, "../public")
   : process.env.DIST;
 
+const NOTIFICATION_TITLE = "Basic Notification";
+const NOTIFICATION_BODY = "Notification from the Main process";
+
+const openNotification = () => {
+  new Notification({
+    title: NOTIFICATION_TITLE,
+    body: NOTIFICATION_BODY,
+  }).show();
+};
 // Disable GPU Acceleration for Windows 7
 if (release().startsWith("6.1")) app.disableHardwareAcceleration();
 
@@ -41,14 +51,19 @@ async function createWindow() {
     width: 1280,
     height: 720,
     autoHideMenuBar: true,
-    icon: join(process.env.PUBLIC, "logo.png"),
+    icon: join(process.env.PUBLIC, "icon.ico"),
+    // titleBarStyle: "hidden",
+    titleBarOverlay: {
+      color: "#2f3241",
+      symbolColor: "#74b1be",
+      height: 60,
+    },
     webPreferences: {
       preload,
       nodeIntegration: true,
       contextIsolation: false,
     },
   });
-
   if (process.env.VITE_DEV_SERVER_URL) {
     // electron-vite-vue#298
     win.loadURL(url);
@@ -57,7 +72,8 @@ async function createWindow() {
   } else {
     win.loadFile(indexHtml);
   }
-
+  openNotification();
+  fullUpdate(win);
   // Test actively push message to the Electron-Renderer
   win.webContents.on("did-finish-load", () => {
     win?.webContents.send("main-process-message", new Date().toLocaleString());
@@ -68,7 +84,6 @@ async function createWindow() {
     if (url.startsWith("https:")) shell.openExternal(url);
     return { action: "deny" };
   });
-  // win.webContents.on('will-navigate', (event, url) => { }) #344
 }
 
 app.whenReady().then(createWindow);
@@ -92,22 +107,5 @@ app.on("activate", () => {
     allWindows[0].focus();
   } else {
     createWindow();
-  }
-});
-
-// New window example arg: new windows url
-ipcMain.handle("open-win", (_, arg) => {
-  const childWindow = new BrowserWindow({
-    webPreferences: {
-      preload,
-      nodeIntegration: true,
-      contextIsolation: false,
-    },
-  });
-
-  if (process.env.VITE_DEV_SERVER_URL) {
-    childWindow.loadURL(`${url}#${arg}`);
-  } else {
-    childWindow.loadFile(indexHtml, { hash: arg });
   }
 });

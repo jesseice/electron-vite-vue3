@@ -6,7 +6,7 @@ import electron from "vite-plugin-electron";
 import renderer from "vite-plugin-electron-renderer";
 import pkg from "./package.json";
 // import Components from 'unplugin-vue-components/vite';
-import AutoImport from 'unplugin-auto-import/vite';
+import AutoImport from "unplugin-auto-import/vite";
 // import { AntDesignVueResolver } from 'unplugin-vue-components/resolvers';
 
 // https://vitejs.dev/config/
@@ -70,12 +70,12 @@ export default defineConfig(({ command }) => {
       // Use Node.js API in the Renderer-process
       renderer(),
       AutoImport({
-        dts: 'src/auto-imports.d.ts',
-        imports: ['vue', 'vue-router'],
+        dts: "src/auto-imports.d.ts",
+        imports: ["vue", "vue-router"],
 
         eslintrc: {
           enabled: true,
-          filepath: './.eslintrc-auto-import.json',
+          filepath: "./.eslintrc-auto-import.json",
           globalsPropValue: true,
         },
       }),
