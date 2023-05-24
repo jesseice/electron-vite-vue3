@@ -6,7 +6,7 @@ import { autoUpdater } from "electron-updater";
  */
 const allUpdate = async (mainWindow) => {
   //TODO 放入更新地址
-  autoUpdater.setFeedURL("");
+  autoUpdater.setFeedURL("http://static-c.wodh.cn/beigua/ordernumbersync");
   // 更新开始
   const downloadAndUpdate = () => {
     autoUpdater.downloadUpdate(); // 下载更新

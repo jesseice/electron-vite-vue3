@@ -1,33 +1,15 @@
-import { app, BrowserWindow, shell, Notification } from "electron";
+import { app, BrowserWindow, shell } from "electron";
 import { release } from "node:os";
 import { join } from "node:path";
 import "../ipcMain/index";
 import fullUpdate from "../utils/fullUpdate";
-// The built directory structure
-//
-// ├─┬ dist-electron
-// │ ├─┬ main
-// │ │ └── index.js    > Electron-Main
-// │ └─┬ preload
-// │   └── index.js    > Preload-Scripts
-// ├─┬ dist
-// │ └── index.html    > Electron-Renderer
-//
+
 process.env.DIST_ELECTRON = join(__dirname, "..");
 process.env.DIST = join(process.env.DIST_ELECTRON, "../dist");
 process.env.PUBLIC = process.env.VITE_DEV_SERVER_URL
   ? join(process.env.DIST_ELECTRON, "../public")
   : process.env.DIST;
 
-const NOTIFICATION_TITLE = "Basic Notification";
-const NOTIFICATION_BODY = "Notification from the Main process";
-
-const openNotification = () => {
-  new Notification({
-    title: NOTIFICATION_TITLE,
-    body: NOTIFICATION_BODY,
-  }).show();
-};
 // Disable GPU Acceleration for Windows 7
 if (release().startsWith("6.1")) app.disableHardwareAcceleration();
 
@@ -39,8 +21,7 @@ if (!app.requestSingleInstanceLock()) {
   process.exit(0);
 }
 let win: BrowserWindow | null = null;
-// Here, you can also use other preload
-const preload = join(__dirname, "../preload/index.js");
+// const preload = join(__dirname, "../preload/index.js");
 const url = process.env.VITE_DEV_SERVER_URL;
 const indexHtml = join(process.env.DIST, "index.html");
 
@@ -52,27 +33,20 @@ async function createWindow() {
     height: 720,
     autoHideMenuBar: true,
     icon: join(process.env.PUBLIC, "icon.ico"),
-    // titleBarStyle: "hidden",
-    titleBarOverlay: {
-      color: "#2f3241",
-      symbolColor: "#74b1be",
-      height: 60,
-    },
     webPreferences: {
-      preload,
       nodeIntegration: true,
       contextIsolation: false,
     },
   });
+  // win.loadURL('http://127.0.0.1:5174/')
   if (process.env.VITE_DEV_SERVER_URL) {
     // electron-vite-vue#298
     win.loadURL(url);
     // Open devTool if the app is not packaged
-    // win.webContents.openDevTools();
+    win.webContents.openDevTools();
   } else {
     win.loadFile(indexHtml);
   }
-  openNotification();
   fullUpdate(win);
   // Test actively push message to the Electron-Renderer
   win.webContents.on("did-finish-load", () => {

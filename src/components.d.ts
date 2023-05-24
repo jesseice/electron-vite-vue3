@@ -10,5 +10,7 @@ export {}
 declare module '@vue/runtime-core' {
   export interface GlobalComponents {
     Components: typeof import('./components/index.vue')['default']
+    TButton: typeof import('tdesign-vue-next')['Button']
+    TDivider: typeof import('tdesign-vue-next')['Divider']
   }
 }

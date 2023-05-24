@@ -5,9 +5,9 @@ import vue from "@vitejs/plugin-vue";
 import electron from "vite-plugin-electron";
 import renderer from "vite-plugin-electron-renderer";
 import pkg from "./package.json";
-// import Components from 'unplugin-vue-components/vite';
+import Components from "unplugin-vue-components/vite";
 import AutoImport from "unplugin-auto-import/vite";
-// import { AntDesignVueResolver } from 'unplugin-vue-components/resolvers';
+import { TDesignResolver } from "unplugin-vue-components/resolvers";
 
 // https://vitejs.dev/config/
 export default defineConfig(({ command }) => {
@@ -72,24 +72,28 @@ export default defineConfig(({ command }) => {
       AutoImport({
         dts: "src/auto-imports.d.ts",
         imports: ["vue", "vue-router"],
-
         eslintrc: {
           enabled: true,
           filepath: "./.eslintrc-auto-import.json",
           globalsPropValue: true,
         },
+        resolvers: [
+          TDesignResolver({
+            library: "vue-next",
+          }),
+        ],
       }),
-      // Components({
-      //   dts: 'src/components.d.ts',
-      //   deep: true,
-      //   dirs: ['src/components'],
-      //   extensions: ['vue', 'tsx'],
-      //   resolvers: [
-      //     // AntDesignVueResolver({
-      //     //   importStyle: false,
-      //     // }),
-      //   ],
-      // }),
+      Components({
+        dts: "src/components.d.ts",
+        deep: true,
+        dirs: ["src/components"],
+        extensions: ["vue", "tsx"],
+        resolvers: [
+          TDesignResolver({
+            library: "vue-next",
+          }),
+        ],
+      }),
     ],
     server:
       process.env.VSCODE_DEBUG &&
